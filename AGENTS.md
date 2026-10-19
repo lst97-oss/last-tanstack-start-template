@@ -13,12 +13,8 @@ Blank TanStack Start (RSC, Nitro), no CMS. Keep it minimal: every file here must
 
 ## Kernel sharing with payload-tanstack-start-template
 
-- This repo is canonical for `src/server/` except `env.ts` (that repo extends it with `PAYLOAD_*` keys) and that repo's CMS-only extras (`src/server/security/payload-server-url.ts`, Payload bits of `src/plugins/payload-shutdown.ts`).
-- Sync procedure (until a submodule/package wires it automatically):
-  1. Change the kernel here first, with tests (`tests/` mirror module basenames, fakes as deps params, never `mock.module`).
-  2. Mirror the same change into `payload-tanstack-start-template/src/server/` (same path, same content, except `env.ts` keeps its CMS keys).
-  3. Run the verification checklist in both repos.
-  4. When `last-tanstack-start-template` has a remote: replace `payload-tanstack-start-template/src/server/` with a git submodule pointing here (`git submodule add <url> src/server` from that repo root, with this repo's kernel kept at `src/server/` so the mount point preserves `@/server/*` imports), or extract `src/server/` to a shared package both repos depend on. Until then, byte-parity + this checklist is the mechanism.
+- This repo is canonical for `src/server/` code. The Payload repo pulls it automatically via its kernel-sync workflow (weekly schedule + manual dispatch + push-through from here); per-repo exclusions there are `env.ts` (that repo extends the base env with `PAYLOAD_*` keys), `security/payload-server-url.ts`, and the tailored `AGENTS.md`/`README.md` docs.
+- Change procedure: change the kernel here first, with tests (`tests/` mirror module basenames, fakes as deps params, never `mock.module`), run this repo's verification checklist, then merge. The Payload repo syncs on its own — never mirror changes there by hand. The optional push-through (`notify-kernel` workflow below) needs a `KERNEL_DISPATCH_TOKEN` secret, otherwise the Payload schedule still picks the change up.
 - Never add CMS imports to this kernel. CMS-owned guards live in the consuming template.
 
 ## Conventions
@@ -37,5 +33,5 @@ Blank TanStack Start (RSC, Nitro), no CMS. Keep it minimal: every file here must
 - `bunx @biomejs/biome check .` clean; `biome lint src/server` clean; imports organized.
 - `bun run format` applied (formatter covers everything except `*.json`, `src/styles`, `routeTree.gen.ts`).
 - After route changes: `bun run generate-routes`, then `bun run dev` + `bun run smoke` — `/` 200, `/api/live` 200 live, `/api/ready` 200|503 with report.
-- After kernel changes: mirror to the Payload sibling per the sharing section, then verify there too.
+- After kernel changes: no manual mirroring — the Payload repo's kernel-sync pulls them automatically (weekly + dispatch). Just verify here.
 - Never read exit codes off pipelines (`cmd | tail; echo $?` reports `tail`). Capture first, read second.

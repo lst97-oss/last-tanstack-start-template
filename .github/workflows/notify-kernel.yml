@@ -1,0 +1,25 @@
+name: notify-kernel
+
+# Optional push-through: when the kernel changes on main, nudge the Payload
+# template to sync immediately instead of waiting for its weekly schedule.
+# Requires a KERNEL_DISPATCH_TOKEN secret (classic PAT with repo scope on
+# payload-tanstack-start-template). If the secret is absent the job skips
+# silently — schedule + manual dispatch in the Payload repo still cover syncing.
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/server/**']
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.KERNEL_DISPATCH_TOKEN != '' }}
+    steps:
+      - run: |
+          gh api repos/lst97-oss/payload-tanstack-start-template/dispatches \
+            -f event_type=kernel-update \
+            -f client_payload[ref]="${{ github.sha }}" \
+            -f client_payload[repo]="${{ github.repository }}"
+        env:
+          GH_TOKEN: ${{ secrets.KERNEL_DISPATCH_TOKEN }}
