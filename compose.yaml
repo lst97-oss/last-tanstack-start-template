@@ -1,0 +1,23 @@
+name: last-tanstack-start-template
+
+# Local Postgres for the business kernel.
+# Usage: docker compose up -d postgres, then point DATABASE_URL at it.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo-secret-pw
+      POSTGRES_DB: template_demo
+    ports:
+      - '5434:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U demo -d template_demo']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

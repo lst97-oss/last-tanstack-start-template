@@ -1,0 +1,51 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: template_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/template_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+      # Regenerate gitignored route tree fresh checkouts lack — typecheck
+      # and tests need it.
+      - run: bun run generate-routes
+      - run: bun run typecheck
+      - run: bunx @biomejs/biome check .
+      # Boot proof: build the node-server output, serve it, and run the
+      # boot-contract smoke against it (/, live, ready).
+      - run: |
+          export NITRO_PRESET=node-server
+          bun run build
+          (bun scripts/start.ts & echo $! > /tmp/template-server.pid)
+          for i in $(seq 1 30); do
+            curl -sf --max-time 2 http://localhost:3000/api/live && break
+            sleep 2
+          done
+          SMOKE_BASE_URL=http://localhost:3000 bun run smoke
+          kill "$(cat /tmp/template-server.pid)"
