@@ -2,7 +2,7 @@
 
 ## Role / pipeline position
 
-Business logic lives here, DDD-style, behind thin TanStack Start route adapters in `src/routes/api.*.ts` (routes extract data fns, wrap with `withContext`, never contain logic). This tree is the canonical kernel: `payload-tanstack-start-template` consumes the same design (its `src/server/` mirrors these files; CMS-only extras like the Payload origin guard live in that repo, not here).
+Business logic lives here, DDD-style, behind thin TanStack Start route adapters in `src/routes/api.*.ts` (routes extract data fns, wrap with `withContext`, never contain logic). This tree is the canonical kernel: `last-payload-tanstack-start-template` consumes the same design (its `src/server/` mirrors these files; CMS-only extras like the Payload origin guard live in that repo, not here).
 
 Module map — `http/`: `errors.ts` (`HttpError`, `toHttpError`), `response.ts` (`ok`/`fail` envelope), `with-context.ts` (requestId, logging, `withAuth` stub; passes through handler-built `Response`s), `validation.ts` (`parseWith` zod → 400 `VALIDATION_ERROR`); `observability/logger.ts` (structured console, sink-injectable); `db/business-sql.ts` (lazy Bun SQL + Drizzle seam); `config/business-env.ts` (lazy connection string); `env.ts` (required boot env, dual-runtime); `modules/<name>/{domain,application,infrastructure,http}` (one bounded context per dir; `health` is the reference slice: live liveness + ready readiness).
 
@@ -21,7 +21,7 @@ Module map — `http/`: `errors.ts` (`HttpError`, `toHttpError`), `response.ts` 
 - Tests mirror the basename under `tests/`, inject fakes via deps params, never `mock.module`. TDD red → green per slice.
 - Do-not-"fix" seams: `getBusinessDb()` is callerless until the first table-backed module — keep it; `withAuth` is a 501 stub marking the Better Auth seam — don't call it; `health` is unauthenticated by design.
 - No Hono, no CMS imports: this kernel never imports Payload (or any CMS). CMS-owned guards live in the consuming template.
-- Kernel parity: keep these files byte-identical with `payload-tanstack-start-template/src/server/` except for `env.ts` (which that repo extends with CMS keys) and CMS-only extras that repo adds. See root `AGENTS.md` for the sync procedure.
+- Kernel parity: keep these files byte-identical with `last-payload-tanstack-start-template/src/server/` except for `env.ts` (which that repo extends with CMS keys) and CMS-only extras that repo adds. See root `AGENTS.md` for the sync procedure.
 
 ## Conventions
 

@@ -40,5 +40,5 @@ Copy the health slice layer by layer (`modules/health/` → `modules/<name>/`): 
 ## Deliberately not here (yet)
 
 - **No auth wrapper.** `withAuth` is a stub returning 501 — Better Auth session verification plugs in there when it lands.
-- **No CMS.** Payload (or any CMS) integration lives in `payload-tanstack-start-template`, which mirrors this kernel. CMS-only guards must not be added here.
+- **No CMS.** Payload (or any CMS) integration lives in `last-payload-tanstack-start-template`, which mirrors this kernel. CMS-only guards must not be added here.
 - **No Hono.** TanStack Start route handlers plus this kernel are the only HTTP layer.

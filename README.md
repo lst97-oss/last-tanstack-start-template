@@ -1,6 +1,6 @@
 # last-tanstack-start-template
 
-Blank TanStack Start starter (no CMS). Boots standalone: placeholder `/`, REST health at `/api/*`. Owns the canonical business-backend kernel in `src/server/` — the same DDD design `payload-tanstack-start-template` mirrors with its CMS extras.
+Blank TanStack Start starter (no CMS). Boots standalone: placeholder `/`, REST health at `/api/*`. Owns the canonical business-backend kernel in `src/server/` — the same DDD design `last-payload-tanstack-start-template` mirrors with its CMS extras.
 
 ## Quickstart
 
@@ -45,7 +45,7 @@ scripts/                     smoke.ts (boot contract), start.ts (preset-resolvin
 
 Same conventions as the Payload sibling: TanStack Query (`useSuspenseQuery`, provider auto-supplied by `setupRouterSsrQueryIntegration` in `src/router.tsx` — never add an explicit `QueryClientProvider`), TanStack Form (`useForm` + `form.Field` colocated per route), TanStack Store (`createStore` at feature module scope). Styling follows `DESIGN.md` rules in the Payload repo (semantic tokens, Tailwind-first) — `src/styles/app.css` carries the same token system.
 
-## Relationship to payload-tanstack-start-template
+## Relationship to last-payload-tanstack-start-template
 
 This repo owns the kernel. That repo mirrors `src/server/` file-for-file except:
 - `src/server/env.ts` — extended with `PAYLOAD_SECRET` + `PAYLOAD_PUBLIC_SERVER_URL`.

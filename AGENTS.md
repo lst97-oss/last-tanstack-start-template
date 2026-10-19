@@ -11,7 +11,7 @@ Blank TanStack Start (RSC, Nitro), no CMS. Keep it minimal: every file here must
 - `src/plugins/business-shutdown.ts` drains the business Postgres pool on Nitro `close` + SIGINT/SIGTERM. Without it the pool holds the process open until the platform force-kills it.
 - `src/server/http/with-context.ts` MUST return handler-built `Response`s as-is (ready's 200|503) and only wrap plain data in the `ok()` envelope.
 
-## Kernel sharing with payload-tanstack-start-template
+## Kernel sharing with last-payload-tanstack-start-template
 
 - This repo is canonical for `src/server/` code. The Payload repo pulls it automatically via its kernel-sync workflow (weekly schedule + manual dispatch + push-through from here); per-repo exclusions there are `env.ts` (that repo extends the base env with `PAYLOAD_*` keys), `security/payload-server-url.ts`, and the tailored `AGENTS.md`/`README.md` docs.
 - Change procedure: change the kernel here first, with tests (`tests/` mirror module basenames, fakes as deps params, never `mock.module`), run this repo's verification checklist, then merge. The Payload repo syncs on its own — never mirror changes there by hand. The optional push-through (`notify-kernel` workflow below) needs a `KERNEL_DISPATCH_TOKEN` secret, otherwise the Payload schedule still picks the change up.
