@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Single source: .bun-version. Bump both together (CI reads the file).
-ARG BUN_VERSION=1.4.3
+ARG BUN_VERSION=1.4.4
 
 FROM oven/bun:${BUN_VERSION}-slim AS base
 WORKDIR /app

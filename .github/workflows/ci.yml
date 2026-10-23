@@ -35,8 +35,7 @@ jobs:
       # Regenerate gitignored route tree fresh checkouts lack — typecheck
       # and tests need it.
       - run: bun run generate-routes
-      - run: bun run typecheck
-      - run: bunx @biomejs/biome check .
+      - run: bun run check
       - run: bun test
       # Boot proof: build the node-server output, serve it, and run the
       # boot-contract smoke against it (/, live, ready).
