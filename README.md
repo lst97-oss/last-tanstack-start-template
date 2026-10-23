@@ -23,9 +23,11 @@ bun run dev            # http://localhost:3000
 | `start` | Run Nitro output for the active preset (`scripts/start.ts`: `node-server` → `.output/server/index.mjs`, default `vercel` → `.vercel/output/functions/__server.func`) |
 | `generate-routes` | Regenerate `src/routeTree.gen.ts` after adding/removing route files |
 | `db:up` | Start local Postgres (`compose.yaml`) matching `.env` |
-| `typecheck` | `bun check` (Bun 1.4.3+ native checker) |
+| `typecheck` | `bun check --no-script` (Bun 1.4.4+ native checker) |
 | `smoke` | Boot-contract check against a running server (`bun run smoke [baseUrl]`): `/` 200, `/api/live` 200 live, `/api/ready` 200\|503 with report |
-| `format` | Apply Biome formatting |
+| `format` / `format:check` | `bun fmt` / `bun fmt --check` (Bun 1.4.4+; config in `bunfig.toml`) |
+| `lint` / `lint:fix` | Biome lint + import assist (formatter disabled) |
+| `check` | `format:check` → `lint` → `typecheck` (what CI runs) |
 
 ## Structure
 

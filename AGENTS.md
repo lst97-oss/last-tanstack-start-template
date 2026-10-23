@@ -24,15 +24,14 @@ Blank TanStack Start (RSC, Nitro), no CMS. Keep it minimal: every file here must
 - Styling: Tailwind v4 (`src/styles/app.css` imported by the root shell). DESIGN.md is the styling authority (including its §17 shadcn rules): semantic tokens over hardcoded colours, neutral-by-default, status colours with purpose, Tailwind-first/CSS-when-clearer. Palette lives in `app.css` (`:root`/`.dark` values, `@theme inline` mappings) — reuse tokens, never duplicate them. shadcn registry components live in `src/components/ui/` (`base-nova`, neutral, lucide) — use them before hand-rolling primitives, add via `bunx shadcn add <name>`, mount shared providers (e.g. `<Toaster />`) once in the root shell. The `shadcn` npm dep stays: it ships the `shadcn/tailwind.css` keyframes/variants `app.css` imports.
 - Shell providers are fixed: `ThemeProvider` (`next-themes`, class mode) + Base-UI `Toaster` in `__root.tsx`; site toast is `toast.add()` from `@/components/ui/toast` — never `sonner`. Registry ships only exercised components; unused `bunx shadcn add` drops get deleted with their deps, never kept "for later".
 - Dev-only `/ui` showcase (`src/routes/ui.tsx` + `src/features/ui-showcase/`, gated by `import.meta.env.DEV`, production 404) exercises every installed registry module; remove per `src/features/ui-showcase/README.md` when shipping.
-- Style (Biome): 2-space, 120 cols, single quotes, JSX double, semicolons as-needed, trailing commas. Linter covers `src/server/**` only; formatter skips `src/styles`, `routeTree.gen.ts`, `*.json`.
+- Style: formatting is `bun fmt` (Bun 1.4.4+, config in `bunfig.toml` `[fmt]`): 2-space, 120 cols, single quotes, JSX double, semicolons as-needed, trailing commas, double-quoted CSS strings. It skips `*.json`, Markdown/MDX, YAML, TOML, `.agents/` and `vendor/`; generated files are gitignored. Biome is lint + import-assist only (formatter disabled) and its linter covers `src/server/**`.
 - Tests (when added): mirror module basename under `tests/`, never co-located. Fakes are injected ports (`fetcher = fetch`), never `mock.module`.
 - Changes to generated files are forbidden: `src/routeTree.gen.ts` — regenerate via `bun run generate-routes`.
 
 ## Verification before declaring done
 
-- `bun run typecheck` clean (`bun check`, Bun 1.4.3+ native).
-- `bunx @biomejs/biome check .` clean; `biome lint src/server` clean; imports organized.
-- `bun run format` applied (formatter covers everything except `*.json`, `src/styles`, `routeTree.gen.ts`).
+- `bun run check` clean: `bun fmt --check` + Biome lint/import-assist + `bun check --no-script` (Bun 1.4.4+ native checker). Bare `bun check` runs the aggregate `check` script.
+- `bun run format` applied before committing (`bun fmt`); `bun run lint:fix` for Biome fixes.
 - After route changes: `bun run generate-routes`, then `bun run dev` + `bun run smoke` — `/` 200, `/api/live` 200 live, `/api/ready` 200|503 with report. In dev, open `/ui` and check light/dark mode, keyboard focus, and no page-wide horizontal overflow.
 - After kernel changes: no manual mirroring — the Payload repo's kernel-sync pulls them automatically (weekly + dispatch). Just verify here.
 - Never read exit codes off pipelines (`cmd | tail; echo $?` reports `tail`). Capture first, read second.
