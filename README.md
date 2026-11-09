@@ -40,7 +40,7 @@ src/routes/                  __root (ThemeProvider + Base-UI Toaster), index pla
                              api.live (liveness), api.ready (readiness),
                              ui.tsx (dev-only shadcn showcase shell → src/features/ui-showcase)
 src/features/ui-showcase/    dev-only component gallery (11 section files + README); remove per its README
-src/plugins/                 business-shutdown.ts (Nitro close hook + SIGINT/SIGTERM drain)
+src/plugins/                 business-shutdown.ts (Nitro close hook: drain, log, exit)
 src/lib/                     site-not-found.tsx, site-error.tsx, utils.ts (cn), highlighter.tsx (shiki engine)
 src/hooks/                   use-mobile.ts, use-highlighted-code.ts (shiki highlighting for code-block/trace)
 src/components/ui/           full shadcn registry (base-nova, neutral, lucide) incl. sidebar, code-block, trace
@@ -58,6 +58,6 @@ Same conventions as the Payload sibling: TanStack Query (`useSuspenseQuery`, pro
 This repo owns the kernel. That repo mirrors `src/server/` file-for-file except:
 - `src/server/env.ts` — extended with `PAYLOAD_SECRET` + `PAYLOAD_PUBLIC_SERVER_URL`.
 - `src/server/security/payload-server-url.ts` — CMS-only extra (loopback guard for `payload.config.ts`).
-- `src/plugins/payload-shutdown.ts` — also drains cached Payload instances.
+- `src/payload/payload-shutdown.ts` — also drains cached Payload instances (lives in the Payload sibling only).
 
 Sync procedure lives in `AGENTS.md`. Never fix drift by editing one side only — change the kernel here first, then mirror.
