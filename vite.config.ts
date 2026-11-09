@@ -5,6 +5,7 @@ import viteReact from '@vitejs/plugin-react'
 import viteRsc from '@vitejs/plugin-rsc'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
+import { routeDevToolLogs, viteLogger } from './scripts/vite-logger.ts'
 
 // Vite bundles this config to node_modules/.vite-temp and imports the bundle,
 // so import.meta.dir/dirname point at the temp dir — not the project root.
@@ -22,7 +23,12 @@ const PRIVATE_SECURITY_HEADERS: Record<string, string> = {
   ...(Bun.env.NODE_ENV === 'production' ? { 'strict-transport-security': 'max-age=31536000; includeSubDomains' } : {}),
 }
 
+// Nitro's lines go through the same writer as Vite's and the server's (see scripts/vite-logger.ts).
+routeDevToolLogs()
+
 export default defineConfig({
+  // Same format and settings as the server's logs (see scripts/vite-logger.ts).
+  customLogger: viteLogger(),
   resolve: {
     // Bare '@' would prefix-match npm scopes (@tanstack/…); anchor to '@/…'.
     alias: [{ find: /^@\//, replacement: `${projectPath('./src')}/` }],

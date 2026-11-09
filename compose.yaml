@@ -4,7 +4,7 @@ name: last-tanstack-start-template
 # Usage: docker compose up -d postgres, then point DATABASE_URL at it.
 services:
   postgres:
-    image: postgres:16
+    image: postgres:18
     environment:
       POSTGRES_USER: demo
       POSTGRES_PASSWORD: demo-secret-pw
@@ -12,7 +12,9 @@ services:
     ports:
       - '5434:5432'
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # 18+ sets PGDATA=/var/lib/postgresql/18/docker, so the volume mounts the parent.
+      # A 16.x volume is not upgraded in place: reset it (`docker compose down -v`) or pg_upgrade.
+      - pgdata:/var/lib/postgresql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U demo -d template_demo']
       interval: 5s
